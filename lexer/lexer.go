@@ -1,6 +1,7 @@
 package lexer
 
 import (
+	"interpreter/token"
 	"unicode/utf8"
 )
 
@@ -26,4 +27,38 @@ func (l *Lexer) readChar() {
 	}
 	l.position = l.readPosition
 	l.readPosition += jumpSize
+}
+
+func (l *Lexer) NextToken() token.Token {
+	var tok token.Token
+	switch l.rune {
+	case '=':
+		tok = newToken(token.ASSIGN, string(l.rune))
+	case '+':
+		tok = newToken(token.PLUS, string(l.rune))
+	case ',':
+		tok = newToken(token.COMMA, string(l.rune))
+	case ';':
+		tok = newToken(token.SEMICOLON, string(l.rune))
+	case '(':
+		tok = newToken(token.LPAREN, string(l.rune))
+	case ')':
+		tok = newToken(token.RPAREN, string(l.rune))
+	case '{':
+		tok = newToken(token.LBRACE, string(l.rune))
+	case '}':
+		tok = newToken(token.RBRACE, string(l.rune))
+	case 0:
+		tok.Literal = ""
+		tok.Type = token.EOF
+	}
+	l.readChar()
+	return tok
+}
+
+func newToken(Type token.TokenType, Literal string) token.Token {
+	var t token.Token
+	t.Type = Type
+	t.Literal = Literal
+	return t
 }
