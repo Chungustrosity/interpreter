@@ -56,9 +56,6 @@ func (l *Lexer) NextToken() token.Token {
 	return tok
 }
 
-func newToken(Type token.TokenType, Literal string) token.Token {
-	var t token.Token
-	t.Type = Type
-	t.Literal = Literal
-	return t
+func newToken(tokenType token.TokenType, tokenLiteral string) token.Token {
+	return token.Token{Type: tokenType, Literal: tokenLiteral}
 }
