@@ -29,18 +29,39 @@ func (l *Lexer) readChar() {
 	l.readPosition += jumpSize
 }
 
+func (l *Lexer) peekChar() rune {
+	if l.readPosition >= len(l.input) {
+		return 0
+	} else {
+		nextRune, _ := utf8.DecodeRuneInString(l.input[l.readPosition:])
+		return nextRune
+	}
+}
+
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 	l.skipWhitespace()
 	switch l.rune {
+
 	case '=':
-		tok = newToken(token.ASSIGN, string(l.rune))
+		if l.peekChar() == '=' {
+			tok = newToken(token.EQ, "==")
+			l.readChar()
+		} else {
+			tok = newToken(token.ASSIGN, string(l.rune))
+		}
+	case '!':
+		if l.peekChar() == '=' {
+			tok = newToken(token.NOTEQ, "!=")
+			l.readChar()
+		} else {
+			tok = newToken(token.BANG, string(l.rune))
+		}
+
 	case '+':
 		tok = newToken(token.PLUS, string(l.rune))
 	case '-':
 		tok = newToken(token.MINUS, string(l.rune))
-	case '!':
-		tok = newToken(token.BANG, string(l.rune))
 	case '/':
 		tok = newToken(token.SLASH, string(l.rune))
 	case '*':
