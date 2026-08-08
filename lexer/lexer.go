@@ -57,6 +57,12 @@ func (l *Lexer) NextToken() token.Token {
 			tok.Literal = l.readIdentifier()
 			tok.Type = token.LookupKeyword(tok.Literal)
 			return tok
+
+		} else if isDigit(l.rune) {
+			tok.Type = token.INT
+			tok.Literal = l.readNumber()
+			return tok
+
 		} else {
 			tok = newToken(token.ILLEGAL, string(l.rune))
 		}
@@ -77,9 +83,21 @@ func (l *Lexer) readIdentifier() string {
 	return l.input[position:l.position]
 }
 
+func (l *Lexer) readNumber() string {
+	position := l.position
+	for isDigit(l.rune) {
+		l.readChar()
+	}
+	return l.input[position:l.position]
+}
+
 // TODO: extend to correctly handle non-ASCII, unicode runes.
 func isLetter(r rune) bool {
 	return 'a' <= r && r <= 'z' || 'A' <= r && r <= 'Z' || r == '_'
+}
+
+func isDigit(r rune) bool {
+	return '0' <= r && r <= '9'
 }
 
 func (l *Lexer) skipWhitespace() {

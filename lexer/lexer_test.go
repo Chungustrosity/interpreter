@@ -66,27 +66,27 @@ func TestNextToken_MultiCharTokens(t *testing.T) {
 		{token.IDENT, "add"},
 		{token.ASSIGN, "="},
 		{token.FUNCTION, "fn"},
-		{token.LBRACE, "("},
+		{token.LPAREN, "("},
 		{token.IDENT, "x"},
 		{token.COMMA, ","},
 		{token.IDENT, "y"},
-		{token.RBRACE, ")"},
-		{token.LPAREN, "{"},
+		{token.RPAREN, ")"},
+		{token.LBRACE, "{"},
 		{token.IDENT, "x"},
 		{token.PLUS, "+"},
 		{token.IDENT, "y"},
 		{token.SEMICOLON, ";"},
-		{token.RPAREN, "}"},
+		{token.RBRACE, "}"},
 		{token.SEMICOLON, ";"},
 		{token.LET, "let"},
 		{token.IDENT, "result"},
 		{token.ASSIGN, "="},
 		{token.IDENT, "add"},
-		{token.LBRACE, "("},
+		{token.LPAREN, "("},
 		{token.IDENT, "five"},
 		{token.COMMA, ","},
 		{token.IDENT, "ten"},
-		{token.RBRACE, ")"},
+		{token.RPAREN, ")"},
 		{token.SEMICOLON, ";"},
 	}
 
@@ -102,6 +102,5 @@ func TestNextToken_MultiCharTokens(t *testing.T) {
 			t.Fatalf("tests[%d] - token literal wrong. expected=%q, actual=%q",
 				i, testToken.expectedLiteral, token.Type)
 		}
-
 	}
 }
