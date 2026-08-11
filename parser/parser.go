@@ -8,6 +8,18 @@ import (
 	"interpreter/token"
 )
 
+// precedence
+const (
+	_ int = iota
+	LOWEST
+	EQUALS
+	LESSGREATER
+	SUM
+	PRODUCT
+	PREFIX
+	CALL
+)
+
 type Parser struct {
 	l         *lexer.Lexer
 	curToken  token.Token
@@ -36,7 +48,14 @@ func New(l *lexer.Lexer) *Parser {
 	p.nextToken()
 	p.nextToken() // reading twice initially to initialize both p.curToken and p.peekToken
 
+	p.prefixParseFns = make(map[token.TokenType]prefixParseFn)
+	p.registerPrefix(token.IDENT, p.parseIdnetifier)
+
 	return p
+}
+
+func (p *Parser) parseIdnetifier() ast.Expression {
+	return &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
 }
 
 func (p *Parser) nextToken() {
@@ -73,8 +92,26 @@ func (p *Parser) parseStatement() ast.Statement {
 	case token.RETURN:
 		return p.parseReturnStatement()
 	default:
-		return nil
+		return p.parseExpressionStatement()
 
+	}
+}
+
+func (p *Parser) curTokenIs(tt token.TokenType) bool {
+	return p.curToken.Type == tt
+}
+
+func (p *Parser) peekTokenIs(tt token.TokenType) bool {
+	return p.peekToken.Type == tt
+}
+
+func (p *Parser) expectPeek(tt token.TokenType) bool {
+	if p.peekTokenIs(tt) {
+		p.nextToken()
+		return true
+	} else {
+		p.peekError(tt)
+		return false
 	}
 }
 
@@ -108,20 +145,21 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 	return stmt
 }
 
-func (p *Parser) curTokenIs(tt token.TokenType) bool {
-	return p.curToken.Type == tt
-}
-
-func (p *Parser) peekTokenIs(tt token.TokenType) bool {
-	return p.peekToken.Type == tt
-}
-
-func (p *Parser) expectPeek(tt token.TokenType) bool {
-	if p.peekTokenIs(tt) {
+func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
+	stmt := &ast.ExpressionStatement{Token: p.curToken}
+	stmt.Expression = p.parseExpression(LOWEST)
+	// optional semicolon
+	if p.peekTokenIs(token.SEMICOLON) {
 		p.nextToken()
-		return true
-	} else {
-		p.peekError(tt)
-		return false
 	}
+	return stmt
+}
+
+func (p *Parser) parseExpression(precedence int) ast.Expression {
+	prefix := p.prefixParseFns[p.curToken.Type]
+	if prefix == nil {
+		return nil
+	}
+	leftExp := prefix()
+	return leftExp
 }
