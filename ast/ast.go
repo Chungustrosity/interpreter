@@ -203,15 +203,15 @@ func (ie *IfExpression) String() string {
 	return out.String()
 }
 
-type functionLiteral struct {
+type FunctionLiteral struct {
 	Token      token.Token // the "fn" token
 	Parameters []*Identifier
 	Body       *BlockStatement
 }
 
-func (fl *functionLiteral) expressionNode()      {}
-func (fl *functionLiteral) tokenLiteral() string { return fl.Token.Literal }
-func (fl *functionLiteral) String() string {
+func (fl *FunctionLiteral) expressionNode()      {}
+func (fl *FunctionLiteral) TokenLiteral() string { return fl.Token.Literal }
+func (fl *FunctionLiteral) String() string {
 	var out bytes.Buffer
 
 	var params []string
@@ -219,7 +219,7 @@ func (fl *functionLiteral) String() string {
 		params = append(params, p.String())
 	}
 
-	out.WriteString(fl.tokenLiteral())
+	out.WriteString(fl.TokenLiteral())
 	out.WriteString("(")
 	out.WriteString(strings.Join(params, ", "))
 	out.WriteString(")")
