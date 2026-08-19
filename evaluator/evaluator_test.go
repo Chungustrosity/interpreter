@@ -285,7 +285,7 @@ func TestStringLiterals(t *testing.T) {
 }
 
 func TestStringConcatenation(t *testing.T) {
-	input := `"Hello" + "World!"`
+	input := `"Hello" + " " + "World!"`
 	evaluated := testEval(input)
 	str, ok := evaluated.(*object.String)
 	if !ok {
