@@ -124,7 +124,7 @@ type StringLiteral struct {
 
 func (sl *StringLiteral) TokenLiteral() string { return sl.Token.Literal }
 func (sl *StringLiteral) String() string       { return sl.Token.Literal }
-func expressionNode()                          {}
+func (sl *StringLiteral) expressionNode()      {}
 
 type PrefixExpression struct {
 	Token    token.Token // The prefix token, like '!' or '-'
