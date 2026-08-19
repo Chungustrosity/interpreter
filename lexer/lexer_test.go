@@ -149,7 +149,7 @@ func TestNextToken_MultiCharTokens(t *testing.T) {
 		}
 		if token.Literal != testToken.expectedLiteral {
 			t.Fatalf("tests[%d] - token literal wrong. expected=%q, actual=%q",
-				i, testToken.expectedLiteral, token.Type)
+				i, testToken.expectedLiteral, token.Literal)
 		}
 	}
 }
@@ -175,7 +175,8 @@ func TestNextToken_MultiCharTokens_StringLiterals(t *testing.T) {
 	10 == 10;
 	10 != 9;
 	"foobar"
-	"foo bar"`
+	"foo bar"
+	"hi \""`
 
 	tests := []struct {
 		expectedType    token.TokenType
@@ -256,6 +257,7 @@ func TestNextToken_MultiCharTokens_StringLiterals(t *testing.T) {
 		{token.SEMICOLON, ";"},
 		{token.STRING, "foobar"},
 		{token.STRING, "foo bar"},
+		{token.STRING, `hi \"`},
 		{token.EOF, ""},
 	}
 
@@ -269,7 +271,7 @@ func TestNextToken_MultiCharTokens_StringLiterals(t *testing.T) {
 		}
 		if token.Literal != testToken.expectedLiteral {
 			t.Fatalf("tests[%d] - token literal wrong. expected=%q, actual=%q",
-				i, testToken.expectedLiteral, token.Type)
+				i, testToken.expectedLiteral, token.Literal)
 		}
 	}
 }

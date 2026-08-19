@@ -1,8 +1,9 @@
 package lexer
 
 import (
-	"interpreter/token"
 	"unicode/utf8"
+
+	"interpreter/token"
 )
 
 type Lexer struct {
@@ -85,6 +86,9 @@ func (l *Lexer) NextToken() token.Token {
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
+	case '"':
+		tok.Type = token.STRING
+		tok.Literal = l.readString()
 	default:
 		if isLetter(l.rune) {
 			tok.Literal = l.readIdentifier()
@@ -137,4 +141,19 @@ func (l *Lexer) skipWhitespace() {
 	for l.rune == ' ' || l.rune == '\t' || l.rune == '\n' || l.rune == '\r' {
 		l.readChar()
 	}
+}
+
+func (l *Lexer) readString() string {
+	position := l.position + 1
+	for {
+		l.readChar()
+		if l.rune == '\\' {
+			l.readChar()
+			l.readChar()
+		}
+		if l.rune == '"' || l.rune == 0 {
+			break
+		}
+	}
+	return l.input[position:l.position]
 }
