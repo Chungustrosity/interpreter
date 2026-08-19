@@ -117,6 +117,15 @@ func (il *IntegerLiteral) TokenLiteral() string { return il.Token.Literal }
 func (il *IntegerLiteral) String() string       { return il.Token.Literal }
 func (il *IntegerLiteral) expressionNode()      {}
 
+type StringLiteral struct {
+	Token token.Token
+	Value string
+}
+
+func (sl *StringLiteral) TokenLiteral() string { return sl.Token.Literal }
+func (sl *StringLiteral) String() string       { return sl.Token.Literal }
+func expressionNode()                          {}
+
 type PrefixExpression struct {
 	Token    token.Token // The prefix token, like '!' or '-'
 	Operator string
