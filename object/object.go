@@ -24,6 +24,14 @@ const (
 	HASH_OBJ         = "HASH"
 )
 
+var (
+	NULL       = &Null{}
+	TRUE       = &Boolean{Value: true}
+	FALSE      = &Boolean{Value: false}
+	TRUE_HASH  = HashKey{Value: 1, Type: BOOLEAN_OBJ}
+	FALSE_HASH = HashKey{Value: 0, Type: BOOLEAN_OBJ}
+)
+
 type Object interface {
 	Type() ObjectType
 	Inspect() string
@@ -127,15 +135,11 @@ type HashKey struct {
 }
 
 func (b *Boolean) HashKey() HashKey {
-	var value uint64
-
-	if b.Value {
-		value = 1
+	if b == FALSE {
+		return FALSE_HASH
 	} else {
-		value = 0
+		return TRUE_HASH
 	}
-
-	return HashKey{Type: BOOLEAN_OBJ, Value: value}
 }
 
 func (i *Integer) HashKey() HashKey {
@@ -143,7 +147,7 @@ func (i *Integer) HashKey() HashKey {
 }
 
 func (s *String) HashKey() HashKey {
-	if s.Hash.Value == 0 {
+	if s.Hash.Type == "" {
 		s.Hash = s.hashStringKey()
 	}
 	return s.Hash

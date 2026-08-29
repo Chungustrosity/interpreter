@@ -33,7 +33,7 @@ var builtins = map[string]*object.Builtin{
 				return arr.Elements[0]
 			}
 
-			return NULL
+			return object.NULL
 		},
 	},
 
@@ -52,7 +52,7 @@ var builtins = map[string]*object.Builtin{
 				return arr.Elements[length-1]
 			}
 
-			return NULL
+			return object.NULL
 		},
 	},
 
@@ -73,7 +73,7 @@ var builtins = map[string]*object.Builtin{
 				return &object.Array{Elements: newElements}
 			}
 
-			return NULL
+			return object.NULL
 		},
 	},
 
