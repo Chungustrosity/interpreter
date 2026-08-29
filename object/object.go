@@ -88,6 +88,7 @@ func (f *Function) Inspect() string {
 
 type String struct {
 	Value string
+	Hash  HashKey
 }
 
 func (s *String) Type() ObjectType { return STRING_OBJ }
@@ -142,6 +143,13 @@ func (i *Integer) HashKey() HashKey {
 }
 
 func (s *String) HashKey() HashKey {
+	if s.Hash.Value == 0 {
+		s.Hash = s.hashStringKey()
+	}
+	return s.Hash
+}
+
+func (s *String) hashStringKey() HashKey {
 	h := fnv.New64a()
 	h.Write([]byte(s.Value))
 	return HashKey{Type: STRING_OBJ, Value: h.Sum64()}
@@ -169,4 +177,8 @@ func (h *Hash) Inspect() string {
 	out.WriteString("}")
 
 	return out.String()
+}
+
+type Hashable interface {
+	HashKey() HashKey
 }
